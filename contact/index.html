@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link  rel="stylesheet" href = "..\style.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact</title>
@@ -8,20 +9,21 @@
         <a href="..\index.html" >Home</a>
         <a href="..\resume\index.html" >Resume</a>
         <a href="..\projects\index.html" >Projects</a> 
-        <a href="index.html" >Contact</a> 
+        <a class="current" href="index.html" >Contact</a> 
         <a href="https://github.com/cecilia-lin"  target="_blank">Profile</a> 
       </nav>
     
     <h1> Contact </h1>
+
 <body>
     <form action="mailto:yul234@ucsd.edu" method="POST" enctype="text/plain">
         <label>
-        email:
+        Email:
         <input type="email" name="email">
         </label>
     
         <label>
-            subject:
+            Subject:
             <input type="subject" name="subject" >
          </label>
     
@@ -32,6 +34,7 @@
          <button>Submit</button>
          
     </form>
+    
 </head>
 </body>
 </html>

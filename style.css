@@ -1,6 +1,112 @@
+:root {
+  --color-accent: oklch(83.63% 0.0855 7); 
+  --color-title: oklch(71.47% 0.2401 7);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1.1; 
+  text-wrap: balance; 
+  margin: 0.5em 0;
+}
+
 body {
     /* Set line height to 1.5 times the font size
          and use the OS’s UI font as the website font
        */
     font: 100%/1.5 system-ui;
+    max-width: 100ch;
+    margin-inline: max(1em, (100% - 100ch) / 2);
+    font-family: 'Didot', serif;
   }
+
+nav {
+  display: flex; 
+  margin-bottom: 1em;
+  border-bottom-width: 1px solid oklch(80% 3% 200);
+  
+}
+
+nav a {
+  flex: 1; 
+  text-decoration: none;
+  color: inherit;
+  text-align: center;
+  padding: 0.5em;
+}
+
+nav a.current {
+  border-bottom: 0.4em solid oklch(80% 3% 200);
+  padding-bottom: 0.1em; 
+}
+
+nav a:hover {
+  border-bottom: 0.4em solid var(--color-accent);
+  padding-bottom: 0.1em; 
+  background-color: oklch(from var(--color-accent) 95% 5% h)
+}
+
+input, textarea, button {
+  font-family: inherit; 
+}
+
+form {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1em;
+}
+
+form label {
+  display: grid; 
+  grid-template-columns: subgrid; 
+  grid-column: 1 / -1;
+}
+
+
+.projects{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15em, 1fr));
+  gap: 1em;
+  h2{
+    margin-bottom: 0.5em;
+    min-height: 3em;
+  }
+}
+
+.project article{
+  grid-row: span 3;
+  gap: 1em;
+}
+
+.resume section, .resume article {
+  background-color: oklch(from var(--color-accent) 95% 5% h);
+  border-radius: 8px;
+  padding: 1.5em;
+  margin-bottom: 2em;
+  box-shadow: 0 2px 4px oklch(80% 3% 200);
+  color: oklch(50.69% 0.0132 16.24);
+  header{
+    color: var(--color-title);
+  }
+}
+
+.resume article{
+
+  text-align: center; 
+  display: flex; 
+  flex-direction: column;
+  align-items: center;
+
+  a{
+    flex: 1; 
+    text-decoration: none;
+    color: var(--color-title);
+    text-align: center;
+    padding: 0.5em;
+  }
+  
+  a:hover {
+    padding-bottom: 0.1em; 
+    background-color: oklch(71.47% 0.1052 233.29 / 37.12%);
+    border-radius: 8px;
+  }
+}
