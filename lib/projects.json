@@ -1,0 +1,74 @@
+[
+    {
+        "title": "Rating of Recipes Prediction",
+        "year": "2024",
+        "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+        "description": "Analyzed the relationship between sugar proportion and recipe ratings using Food.com datasets."
+    },
+    {
+        "title": "Pokemon Classification",
+        "year": "2024",
+        "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+        "description": "Used Logistic Regression, Support Vector Machine (SVM), and Residual Network 18 (ResNet18) to classsify if a Pokemon has wings or not given an image."
+    },
+    {
+        "title": "Interest Zoning",
+        "year": "2024",
+        "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+        "description": "Developed an app to connect event attendees with similar interests within a 1-mile radius, reducing social anxiety."
+    },
+    {
+        "title": "Electric Vehicle Analysis",
+        "year": "2023",
+        "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+        "description": "Utilized statistical testing to identify trends in BEV vs. PHEV across Washington counties with 210,000+ EVs."
+    },
+    {
+        "title": "Non sapiente aut dolorem?",
+        "year": "2023",
+        "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+        "description": "Necessitatibus, nam! Cupiditate expedita quam doloribus assumenda rerum, reiciendis quasi? Numquam debitis laboriosam cumque ullam error quaerat obcaecati neque minima, voluptas accusamus adipisci dolorum ratione eaque doloribus voluptate dolores recusandae!"
+    },
+    {
+        "title": "A perspiciatis architecto nihil.",
+        "year": "2024",
+        "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+        "description": "Eaque, modi velit. Laborum, quibusdam, nesciunt quo sit veritatis, necessitatibus accusantium quia vitae aut possimus quod voluptas ipsam doloremque quae pariatur et repudiandae optio? Cumque est neque eius vel recusandae."
+    },
+    {
+        "title": "Expedita distinctio veritatis quos?",
+        "year": "2024",
+        "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+        "description": "Exercitationem repudiandae voluptatibus doloremque vitae suscipit. Libero, aliquid debitis repellat maiores laudantium cum incidunt amet voluptates culpa earum officia cumque repudiandae magni, voluptatibus pariatur mollitia voluptatum? Pariatur voluptate assumenda inventore."
+    },
+    {
+        "title": "Asperiores, laborum? Nostrum, perspiciatis!",
+        "year": "2021",
+        "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+        "description": "Assumenda, optio voluptas! Soluta nostrum dolorem aspernatur voluptatem labore perferendis ratione esse numquam. Esse expedita maxime suscipit repellat. Nihil cupiditate vero velit laudantium esse animi, minima voluptatibus perspiciatis quas assumenda."
+    },
+    {
+        "title": "At dolores veniam temporibus!",
+        "year": "2022",
+        "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+        "description": "Voluptas architecto illum dolorum blanditiis facilis voluptatem officia iure explicabo saepe eum repellat aut velit, nemo inventore accusamus nesciunt esse, culpa nobis quia id debitis ad! Beatae aliquam natus sequi."
+    },
+    {
+        "title": "Alias sequi ex impedit.",
+        "year": "2023",
+        "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+        "description": "Id, impedit. Sint sunt in quod nulla qui sed rem tenetur quibusdam molestiae numquam repellat soluta deleniti, consectetur nobis magnam doloribus modi autem porro assumenda iste cupiditate? Autem, molestias aut."
+    },
+    {
+        "title": "Veritatis assumenda sint totam.",
+        "year": "2022",
+        "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+        "description": "Odit ipsum perspiciatis vero numquam nostrum aliquam error autem quia ipsam delectus quos, laudantium doloremque alias, eius veritatis debitis nam fugit animi, rerum voluptatem earum aperiam temporibus molestiae porro? Officiis."
+    },
+    {
+        "title": "Necessitatibus optio perspiciatis sit.",
+        "year": "2022",
+        "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+        "description": "Laudantium deleniti tempore veniam minima! Odio, vitae. Aliquid deserunt doloribus, corrupti reiciendis in, veritatis iste recusandae quae molestiae vitae eaque assumenda. Eius eum laboriosam asperiores nemo maxime voluptates debitis ex."
+    }
+]

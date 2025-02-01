@@ -17,6 +17,21 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0.5em 0;
 }
 
+.container {
+  display: flex;
+  justify-content: space-between; /* Space between the columns */
+  align-items: center; /* Vertically center the items */
+}
+
+.text-column {
+  flex: 1; /* Take up equal space */
+
+}
+
+.image-column {
+  flex: 0;
+}
+
 body {
     /* Set line height to 1.5 times the font size
          and use the OS’s UI font as the website font
@@ -74,20 +89,37 @@ form label {
 }
 
 
-.projects{
+.projects {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(15em, 1fr));
   gap: 1em;
-  h2{
-    margin-bottom: 0.5em;
-    min-height: 3em;
-  }
+  margin-bottom: 1em;
 }
 
-.project article{
+.project article {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   grid-row: span 3;
   gap: 1em;
+  height: 100%; /* Ensure project boxes take up full height */
 }
+
+.project article h3 {
+  flex-shrink: 0; /* Prevent title from shrinking */
+  margin-bottom: 0.5em;
+  overflow-wrap: break-word; /* Allow titles to break into multiple lines */
+}
+
+.project article img {
+  flex-grow: 1; /* Let the image take available space */
+  object-fit: contain; /* Ensure the image retains its aspect ratio */
+}
+
+.project article p {
+  flex-grow: 0; /* Keep description at normal height */
+}
+
 
 .resume section, .resume article {
   background-color: oklch(from var(--color-accent) 95% 5% h);
@@ -121,4 +153,32 @@ form label {
     background-color: oklch(71.47% 0.1052 233.29 / 37.12%);
     border-radius: 8px;
   }
+}
+
+#profile-stats {
+  display: grid;  /* Use CSS Grid layout */
+  grid-template-columns: repeat(4, 1fr);  /* Four equal columns */
+  gap: 10px;  /* Add space between the grid items */
+
+}
+
+#profile-stats .stat-term {
+  grid-row: 1; 
+  font-weight: bold;  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#profile-stats .stat-value {
+  grid-row: 2; 
+  color: var(--border-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+h2{
+  color: var(--color-title);
 }

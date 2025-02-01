@@ -4,14 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Cecilia Lin: Personal site and portfolio</title>
-    <h1>Cecilia Lin</h1>
-    <p> I am a third year data science student at UCSD.</p>
-    <img src="images/pic.png" alt = "cartoon dog">
+    <title>Cecilia's Portfolio</title>
+
+    <div class="container">
+        <div class="text-column">
+            <h1>Cecilia Lin</h1>
+            <p>I am a third-year data science student at UCSD.</p>
+        </div>
+        <div class="image-column">
+            <img src="images/pic.png" alt="cartoon bunny" width="300" height="300">
+        </div>
+    </div>
+    
     <link  rel="stylesheet" href = "style.css">
     <script type="module" src="global.js"></script>
+    <script src="projects/index.js" type="module" defer></script>
+
 </head>
 <body>
+    <h2>Latest Projects</h2>
+<div class="projects">
+    <!-- Dynamically added content will appear here -->
+</div>
 
+<h2> My GitHub Stats</h2>
+<div id='profile-stats'>
+    
+</div>
 </body>
 </html>
