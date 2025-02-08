@@ -9,6 +9,7 @@ const projectsContainer = document.querySelector('.projects');
 renderProjects(projects, projectsContainer, 'h2');
 
 let selectedIndex = -1;
+let query = '';
 
 // Refactor all plotting into one function
 function renderPieChart(projectsGiven) {
@@ -29,8 +30,10 @@ function renderPieChart(projectsGiven) {
     let newArcData = newSliceGenerator(data);
     let colors = d3.scaleOrdinal(d3.schemeTableau10);
     let arcGenerator = d3.arc().innerRadius(0).outerRadius(50);
+    let svg = d3.select('svg');
+
     let newArcs = newArcData.map((d) => arcGenerator(d));
-    let svg = d3.select('svg')
+
 
     newArcs.forEach((arc, idx) => {
         svg.append('path')
@@ -39,17 +42,11 @@ function renderPieChart(projectsGiven) {
           .on('click', () => {
             selectedIndex = selectedIndex === idx ? -1 : idx;
             
+            
             updateSelectionState(data);
-            filterProjectsByYear(data);
+            filterProjects();
           });
     });
-
-    d3.select('svg')
-    .selectAll('path')
-    .attr('class', (_, idx) => (
-        selectedIndex === idx ? 'selected' : null
-    ));
-    
 
     let legend = d3.select('.legend');
     data.forEach((d, idx) => {
@@ -59,37 +56,16 @@ function renderPieChart(projectsGiven) {
           .html(`<span class="swatch"></span> ${d.label} <em>(${d.value})</em>`)
           .style('cursor', 'pointer')
           .on('click', function () {
-              selectedIndex = selectedIndex === idx ? -1 : idx;              
-            updateSelectionState(data);
-            filterProjectsByYear(data);
+                selectedIndex = selectedIndex === idx ? -1 : idx; 
+                         
+                updateSelectionState(data);
+                filterProjects();
             });
     });
 
-    legend
-        .selectAll('li')
-        .attr('class', (_, idx) => (
-            selectedIndex === idx ? 'selected' : null
-        ));
+    updateSelectionState(data);
+
 }
-  
-
-  
-
-let query = '';
-let searchInput = document.querySelector('.searchBar');
-
-searchInput.addEventListener('input', (event) => {
-    query = event.target.value.toLowerCase();
-
-    let filteredProjects = projects.filter((project) => {
-        let values = Object.values(project).join('\n').toLowerCase();
-        return values.includes(query);
-    });
-
-    // re-render legends and pie chart when event triggers
-    renderProjects(filteredProjects, projectsContainer, 'h2');
-    renderPieChart(filteredProjects);
-  });
 
   function updateSelectionState(data) {
     d3.selectAll('path')
@@ -99,21 +75,34 @@ searchInput.addEventListener('input', (event) => {
         .attr('class', (_, idx) => (selectedIndex === idx ? 'selected' : null));
 }
 
-  function filterProjectsByYear(data) {
-    if (selectedIndex === -1) {
-        renderProjects(projects, projectsContainer, 'h2');
-    } else {
-        let selectedYear = data[selectedIndex]?.label;
+  function filterProjects() {
 
-        if (!selectedYear) {
-            console.error("Error: Selected year is undefined");
-            return;
-        }
-
-        let filteredProjects = projects.filter(project => project.year == selectedYear);
-
-        renderProjects(filteredProjects, projectsContainer, 'h2'); 
+    let filteredProjects = projects;
+    
+    //apply search 
+    if (query.length > 0) {
+        filteredProjects = filteredProjects.filter((project) => {
+            let values = Object.values(project).join('\n').toLowerCase();
+            return values.includes(query.toLowerCase());
+        });
     }
+    
+    //apply pie chart filter 
+    if (selectedIndex !== -1) {
+        let data = d3.rollups(projects, (v) => v.length, (d) => d.year)
+                     .map(([year, count]) => ({ value: count, label: year }));
+
+        let selectedYear = data[selectedIndex]?.label;
+        filteredProjects = filteredProjects.filter(project => project.year == selectedYear);
+    }
+
+    renderProjects(filteredProjects, projectsContainer, 'h2');
 }
+
 renderPieChart(projects);
 
+let searchInput = document.querySelector('.searchBar');
+searchInput.addEventListener('input', (event) => {
+    query = event.target.value;
+    filterProjects(); 
+});
