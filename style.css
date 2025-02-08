@@ -182,3 +182,73 @@ form label {
 h2{
   color: var(--color-title);
 }
+
+#projects-plot {
+  max-width: 20em;
+  margin-block: 2em;
+  overflow: visible;
+  padding-right: 1em;
+}
+
+.legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9em, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+  flex: 1;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #f9f9f9;
+  list-style: none;
+}
+
+.label{
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 0.5em;
+  
+}
+
+.swatch {
+  width: 1em;
+  height: 1em;
+  background-color: var(--color);
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap; 
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+&:has(path:hover) {
+  path:not(:hover) {
+    opacity: 0.5;
+  }
+}
+
+path {
+  transition: 300ms;
+  cursor: pointer; 
+}
+
+.selected {
+  --color: oklch(60% 45% 0) !important;
+
+  &:is(path) {
+    fill: var(--color);
+  }
+}
+
+path.selected {
+  fill: var(--color);
+}
+
+.legend li.selected {
+  font-weight: bold;
+}
