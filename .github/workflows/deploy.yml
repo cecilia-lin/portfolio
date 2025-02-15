@@ -1,13 +1,13 @@
-name: Checkout
+- name: Checkout
   uses: actions/checkout@v4
   with:
     fetch-depth: '0'
 
-name: Run Elocuent
+- name: Run Elocuent
   run: |
     npx elocuent -d . -o meta/loc.csv
 
-name: Commit and Push
+- name: Commit and Push
   run: |
     git config --local user.email "action@github.com"
     git config --local user.name "GitHub Action"
@@ -18,7 +18,7 @@ name: Commit and Push
     git push
 
 
-permissions:
+- permissions:
   contents: write
   pages: write
   id-token: write

@@ -147,6 +147,3 @@ export function renderProjects(project, containerElement, headingLevel = 'h2') {
   export async function fetchGithubData(username) {
     return fetchJSON(`https://api.github.com/users/${username}`);
 }
-
-
-~
