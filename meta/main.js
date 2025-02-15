@@ -151,7 +151,8 @@ function processCommits() {
         gridlines.call(d3.axisLeft(yScale).tickFormat('').tickSize(-usableArea.width));
 
       // Create the axes
-    const xAxis = d3.axisBottom(xScale);
+    const xAxis = d3.axisBottom(xScale)
+        .tickFormat(d3.timeFormat("%b %d"));
     const yAxis = d3
         .axisLeft(yScale)
         .tickFormat((d) => String(d % 24).padStart(2, '0') + ':00');
@@ -178,7 +179,7 @@ function processCommits() {
     const sortedCommits = d3.sort(commits, (d) => -d.totalLines);
     dots.selectAll('circle').data(sortedCommits).join('circle');
     brushSelector();
-
+    
     dots
     .selectAll('circle')
     .data(commits)
@@ -188,13 +189,14 @@ function processCommits() {
     .attr('r', (d) => rScale(d.totalLines))
     .style('fill-opacity', 0.5)
     .attr('fill', '#8E6F60')
-    .on('mouseenter',function(event) {
+    .on('mouseenter',function(event,d) {
         d3.select(event.currentTarget).style('fill-opacity', 1);
+        updateTooltipContent(d);
         updateTooltipVisibility(true);
         updateTooltipPosition(event);
       })
-    .on('mouseleave', function(event) {
-        d3.select(event.currentTarget).style('fill-opacity', 0.7);
+    .on('mouseleave', function() {
+        d3.select(this).style('fill-opacity', 0.7);
         updateTooltipContent({});
         updateTooltipVisibility(false);
     })
@@ -214,7 +216,7 @@ function updateTooltipContent(commit) {
       tooltip.style.display = "none"; // Hide tooltip when there's no data
       return;
     }
-  
+    
     tooltip.style.display = "block"; // Show tooltip on hover
     link.href = commit.url;
     link.textContent = commit.id;
