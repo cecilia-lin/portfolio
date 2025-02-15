@@ -17,6 +17,7 @@ let pages = [
     { url: 'projects/', title: 'Projects' },
     { url: 'resume/', title: 'Resume' },
     { url: 'https://github.com/cecilia-lin', title: 'Profile' },
+    { url: 'meta/', title: 'Meta' },
     { url: 'contact/', title: 'Contact' },
   ];
 
@@ -143,7 +144,8 @@ export function renderProjects(project, containerElement, headingLevel = 'h2') {
 
 }
 
-
   export async function fetchGithubData(username) {
     return fetchJSON(`https://api.github.com/users/${username}`);
 }
+
+

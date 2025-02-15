@@ -23,6 +23,7 @@ h1, h2, h3, h4, h5, h6 {
   align-items: center; /* Vertically center the items */
 }
 
+
 .text-column {
   flex: 1; /* Take up equal space */
 
@@ -41,7 +42,7 @@ body {
     margin-inline: max(1em, (100% - 100ch) / 2);
     font-family: 'Didot', serif;
     padding-top: 3rem;
-  padding-right: 2rem;
+    padding-right: 2rem;
   }
 
 nav {
@@ -251,4 +252,144 @@ path.selected {
 
 .legend li.selected {
   font-weight: bold;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 5fr) 6fr 6fr; 
+  gap: 1em;
+  margin-bottom: 1em;
+  text-align: center;
+}
+
+
+dl {
+  display: flex;
+  flex-direction: column; /* Stack dt and dd vertically */
+  align-items: center; /* Center items horizontally */
+  justify-content: center; /* Center content */
+  margin-bottom: 5%;
+}
+
+dt {
+  font-weight: bold;
+  text-align: center;
+  color: oklch(50.69% 0.0132 16.24);
+}
+
+dd {
+  grid-row: 2;
+  margin-inline-start: 0;
+  text-align: center;
+}
+
+dl.info {
+  display: grid;
+  grid-template-columns: auto 1fr; /* Labels on left, values on right */
+  gap: 0.5em 1em;
+  margin: 0;
+  transition-duration: 500ms;
+  transition-property: opacity, visibility;
+}
+
+dl.info[hidden]:not(:hover, :focus-within) {
+  opacity: 0;
+  visibility: hidden;
+}
+
+dl.info dt {
+  font-weight: normal;
+  color: oklch(50.69% 0.0132 16.24);
+}
+
+dl.info dd {
+  font-weight: bold;
+  margin: 0; /* Remove default margins */
+}
+
+.gridlines{
+  color:oklch(81.78% 0.0122 34.24);
+}
+
+.tooltip {
+  position: fixed;
+  top: 1em;
+  left: 1em;
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid #ccc;
+  border-radius: 5%;
+  backdrop-filter: blur(5px);
+  padding: 15px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  max-width: 250px;
+  font-size: 14px;
+}
+
+#commit-tooltip {
+  display: none;  /* Fully hides the tooltip on page load */
+}
+
+
+circle {
+  transition: 200ms;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+circle:hover {
+  transform: scale(1.5);
+  cursor: pointer;
+}
+
+circle.selected {
+  fill: #ee98b7;
+}
+
+@keyframes marching-ants {
+  to {
+    stroke-dashoffset: -8; /* 5 + 3 */
+  }
+}
+
+.selection {
+  fill-opacity: 0.1;
+  stroke: black;
+  stroke-opacity: 0.7;
+  stroke-dasharray: 5 3;
+  animation: marching-ants 2s linear infinite;
+}
+
+#selection-count {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #8E6F60;
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
+  text-align: center; 
+  width: 100%; 
+}
+
+
+#language-breakdown {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15em, 1fr)); 
+  gap: 1em;
+  margin-bottom: 1em;
+  justify-content: center; 
+  text-align: center; 
+}
+
+#info{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 2em;
+  h1{
+    color: #8E6F60;
+  }
+  h2{
+    color: var(--color-accent);
+  }
 }
