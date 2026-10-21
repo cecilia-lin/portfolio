@@ -18,7 +18,9 @@
       "pipelines",
       "research"
     ],
-    "takeaway": "An evidence-led choice between simpler and more complex designs."
+    "takeaway": "An evidence-led choice between simpler and more complex designs.",
+    "shortTitle": "AI credibility evaluation",
+    "shortDescription": "Compared machine-learning and LLM designs across six credibility signals."
   },
   {
     "title": "What goes into a recipe rating?",
@@ -38,7 +40,9 @@
       "modeling",
       "research"
     ],
-    "takeaway": "From a statistical question to an evaluated prediction pipeline."
+    "takeaway": "From a statistical question to an evaluated prediction pipeline.",
+    "shortTitle": "Recipe rating prediction",
+    "shortDescription": "Random Forest rating prediction: F1 improved from 0.87 to 0.92."
   },
   {
     "title": "The secret life of blood glucose",
@@ -58,7 +62,9 @@
       "pipelines",
       "visualization"
     ],
-    "takeaway": "An interactive explanation built around real time-series data."
+    "takeaway": "An interactive explanation built around real time-series data.",
+    "shortTitle": "Blood glucose visualization",
+    "shortDescription": "An interactive data story built from glucose-monitor time series."
   },
   {
     "title": "PosturePress: Sleep Posture Pressure Visualization",

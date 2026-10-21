@@ -23,13 +23,16 @@ function visual(project) {
 }
 function card(p, base) {
   const local = p.featuredOrder !== null;
+  const compact = base === '';
+  const title = compact ? p.shortTitle ?? p.title : p.title;
+  const description = compact ? p.shortDescription ?? p.description : p.description;
   const heading = base ? 'h2' : 'h3';
   const href = local ? `${base}projects/${p.slug}/` : p.url;
   const external = local ? '' : ' target="_blank" rel="noopener noreferrer"';
   const color = {'news-credibility':'news','recipe-analysis':'recipe','blood-glucose':'glucose','posturepress':'news','ev-adoption':'recipe','interest-zoning':'glucose'}[p.slug];
-  const search = [p.title,p.description,p.category,...p.tags,...p.tools].join(' ').toLocaleLowerCase();
+  const search = [p.title,p.shortTitle ?? '',p.description,p.shortDescription ?? '',p.category,...p.tags,...p.tools].join(' ').toLocaleLowerCase();
   return `<article class="project-card" data-project="${escape(p.slug)}" data-tags="${escape(p.tags.join('|'))}" data-search="${escape(search)}">
-<div class="project-visual visual-${color}">${visual(p)}</div><div class="project-body"><p class="project-meta">${escape(p.category)} · ${escape(p.year)}</p><${heading}><a href="${escape(href)}"${external}>${escape(p.title)}</a></${heading}><p class="project-description">${escape(p.description)}</p><ul class="tools" aria-label="Tools and methods">${p.tools.map(t=>`<li>${escape(t)}</li>`).join('')}</ul><a class="project-link" href="${escape(href)}"${external}>${local?'Read case study':escape(p.urlLabel)} <span aria-hidden="true">↗</span><span class="sr-only">: ${escape(p.title)}</span></a></div></article>`;
+<div class="project-visual visual-${color}">${visual(p)}</div><div class="project-body">${compact ? '' : `<p class="project-meta">${escape(p.category)} · ${escape(p.year)}</p>`}<${heading}><a href="${escape(href)}"${external}>${escape(title)}</a></${heading}><p class="project-description">${escape(description)}</p><ul class="tools" aria-label="Tools and methods">${p.tools.map(t=>`<li>${escape(t)}</li>`).join('')}</ul><a class="project-link" href="${escape(href)}"${external}>${local?'Read case study':escape(p.urlLabel)} <span aria-hidden="true">↗</span><span class="sr-only">: ${escape(p.title)}</span></a></div></article>`;
 }
 let changed = false;
 for (const [path, marker, data, base] of [['index.html','featured',featured,''],['projects/index.html','projects',projects,'../']]) {

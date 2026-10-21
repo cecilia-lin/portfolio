@@ -55,5 +55,10 @@ assert.match(home,/Sep 2025 — Sep 2026/);
 assert.match(home,/Knitting/);
 assert.match(index,/id="empty-results"/);
 assert.match(index,/<form[^>]+hidden/);
-assert.ok(![...contents.values()].some(html=>/href="[^"]*\.pdf/.test(html)),'PDF download was not requested.');
+assert.ok(!home.includes('id="about"'),'The repeated About section should be removed.');
+assert.ok(![...contents.values()].some(html=>/href="(?:\.\.\/)*#about"/.test(html)),'Navigation must not link to the removed About section.');
+for (const route of ['index.html','resume/index.html']) {
+  assert.match(contents.get(resolve(root,route)), /<a[^>]+href="[^"]*files\/Cecilia_Lin_Resume\.pdf"[^>]+download="Cecilia_Lin_Resume\.pdf"/, `Downloadable resume required: ${route}`);
+}
+assert.ok((await readFile(resolve(root,'files/Cecilia_Lin_Resume.pdf'))).subarray(0,5).equals(Buffer.from('%PDF-')),'Resume must be a PDF.');
 console.log(`Passed: ${files.length} pages, ${links} local links/assets/fragments, six static projects, and three case-study routes.`);

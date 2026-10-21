@@ -47,8 +47,7 @@ nav .resume-link { color: var(--ink); border: 1px solid var(--line); border-radi
 .nav-toggle { display: none; border: 1px solid var(--line); border-radius: 5px; background: var(--surface); color: var(--ink); padding: 5px 12px; }
 .hero { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, .85fr); align-items: center; gap: 80px; padding-block: 64px 56px; }
 .hero h1 { font-size: clamp(2.8rem, 4.5vw, 4rem); margin-bottom: 19px; }
-.role-intro { margin-bottom: 19px; min-height: 78px; }
-.role-prefix { display: block; color: var(--muted); font-size: 12px; margin-bottom: 5px; }
+.role-intro { margin-bottom: 16px; min-height: 48px; }
 .role-line { display: flex; align-items: center; gap: 18px; min-height: 44px; }
 .role-rotator { display: flex; flex-wrap: wrap; gap: 3px 12px; font-size: 16px; color: var(--accent); font-weight: 550; line-height: 1.6; }
 .role-title + .role-title::before { content: '·'; margin-right: 12px; }
@@ -57,7 +56,7 @@ nav .resume-link { color: var(--ink); border: 1px solid var(--line); border-radi
 .has-role-animation .role-title::before { content: none; }
 .role-toggle { color: var(--muted); background: transparent; border: 1px solid var(--line); border-radius: 4px; padding: 3px 9px; font-size: 10px; min-width: 54px; }
 .role-toggle:hover { color: var(--ink); border-color: var(--muted); }
-.hero-portrait { width: min(100%, 310px); justify-self: end; margin: 0; }
+.hero-portrait { width: min(100%, 260px); justify-self: end; margin: 0; }
 .portrait-frame { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--soft); }
 .portrait-frame img { width: 100%; aspect-ratio: 21 / 25; object-fit: cover; }
 .portrait-frame figcaption { color: var(--muted); background: var(--surface); text-align: center; font-size: 11px; padding: 11px; border-top: 1px solid var(--line); }
@@ -106,21 +105,11 @@ h1 em, h2 em { font-weight: 400; color: var(--accent); }
 .job-date { font-size: 10px; color: var(--muted); white-space: nowrap; }
 .company { color: var(--accent); font-size: 12px; margin-bottom: 9px; }
 .experience-item .job-summary { color: var(--muted); font-size: 13px; line-height: 1.85; }
-.about-intro { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; margin-bottom: 35px; }
-.about-intro h2 { max-width: 14ch; }
-.about-copy { color: var(--muted); font-size: 14px; }
-.education-note { font-size: 11px; color: var(--accent); margin-top: 16px; }
-.capabilities { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
-.capability { background: var(--soft); border-radius: 8px; padding: 25px; }
-.capability-number { font: italic 24px var(--display); color: var(--accent); margin-bottom: 20px; }
-.capability h3 { font-size: 15px; }
-.capability p { color: var(--muted); font-size: 12px; }
-.personal { display: grid; grid-template-columns: 1.4fr 1fr; align-items: center; gap: 60px; background: var(--rose); padding: 38px 42px; border-radius: 10px; }
-.personal h2 { font-size: 2.4rem; }
+.personal { display: grid; grid-template-columns: 1.4fr 1fr; align-items: center; gap: 60px; padding: 24px 32px; border: 1px solid var(--line); border-radius: 8px; }
+.personal h2 { font-size: 1.8rem; }
 .personal p { color: var(--muted); max-width: 49ch; font-size: 14px; }
-.personal-art svg { display: block; max-height: 205px; margin: auto; }
-.interest-tags { display: flex; flex-wrap: wrap; gap: 16px; font-size: 11px; margin-top: 20px; color: var(--ink); }
-.contact-section { text-align: center; padding-block: 76px 69px; }
+.personal-art svg { display: block; max-height: 130px; margin: auto; }
+.contact-section { text-align: center; padding-block: 52px; }
 .contact-section h2 { font-size: clamp(2.1rem, 3.6vw, 3.2rem); }
 .contact-section p { color: var(--muted); font-size: 14px; max-width: 49ch; margin-inline: auto; }
 .contact-section .actions { justify-content: center; }
@@ -198,7 +187,7 @@ h1 em, h2 em { font-weight: 400; color: var(--accent); }
   .hero { gap: 38px; padding-top: 50px; }
   .experience-layout { gap: 40px; } .projects { gap: 20px; }
   .project-visual { height: 185px; } .project-card :is(h2, h3) { font-size: 17px; }
-  .about-intro { gap: 40px; } .case-layout { gap: 35px; } .resume-layout { gap: 35px; }
+  .case-layout { gap: 35px; } .resume-layout { gap: 35px; }
 }
 @media (max-width: 760px) {
   :root { scroll-padding-top: 90px; }
@@ -218,12 +207,11 @@ h1 em, h2 em { font-weight: 400; color: var(--accent); }
   .projects { grid-template-columns: 1fr; gap: 34px; }
   .project-visual { height: 245px; } .project-card :is(h2, h3) { font-size: 21px; }
   .project-body { padding-top: 18px; } .project-description { font-size: 14px; }
-  .experience-layout, .about-intro, .resume-layout { grid-template-columns: 1fr; gap: 28px; }
-  .experience-intro { max-width: 45ch; } .job-heading { flex-wrap: wrap; gap: 3px; }
-  .job-date { margin-bottom: 5px; } .capabilities { grid-template-columns: 1fr; gap: 12px; }
-  .capability { padding: 23px; } .capability-number { margin-bottom: 12px; }
-  .about-intro h2 { max-width: 16ch; } .personal { grid-template-columns: 1fr; gap: 12px; padding: 30px 24px; }
-  .personal h2 { font-size: 2.1rem; } .personal-art svg { max-height: 170px; }
+  .experience-layout, .resume-layout { grid-template-columns: 1fr; gap: 28px; }
+  .job-heading { flex-wrap: wrap; gap: 3px; }
+  .job-date { margin-bottom: 5px; }
+  .personal { grid-template-columns: 1fr; gap: 12px; padding: 30px 24px; }
+  .personal h2 { font-size: 1.8rem; } .personal-art svg { max-height: 120px; }
   .footer-inner { flex-wrap: wrap; padding-block: 23px; gap: 7px; }
   .page-header { padding-block: 45px 25px; } .page-header h1 { font-size: 3.4rem; }
   .search-row { gap: 10px; } .search-row .button { padding-inline: 13px; }
