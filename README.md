@@ -12,6 +12,12 @@ Edit `lib/projects.json`, then run `node scripts/sync-projects.mjs`. This update
 
 The filter operates on static cards, so it has no runtime JSON request or loading dependency. All projects remain readable without JavaScript or if filters cannot initialize. Theme controls tolerate unavailable local storage.
 
+## Portrait and job titles
+
+The homepage includes a portrait space. Replace `images/portrait-placeholder.svg` in the homepage image's `src` with your real image path, and change its empty `alt` to `Cecilia Lin`. The frame crops to 21:25 using `object-fit: cover`; adjust `object-position` for the portrait if needed. Remove the “Photo coming soon” caption once a real photo is added.
+
+The job titles rotate using vendored GSAP 3.15.0; there is no runtime CDN dependency. `hero.js` provides a pause/resume button, stops advancing when the page is hidden, and displays all three titles without animation for reduced-motion preferences or unavailable scripts. GSAP's original license header and upstream license reference are retained in `vendor/gsap/`.
+
 ## Checks and publishing
 
 Run `node scripts/sync-projects.mjs --check` and `node scripts/check-site.mjs`. Push the reviewed changes to `main` to use the existing Pages workflow. Browser checks should cover desktop/mobile, both color schemes, reduced motion, keyboard navigation, search/category combinations, empty results, and JavaScript disabled.
