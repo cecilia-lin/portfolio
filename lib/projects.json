@@ -3,7 +3,7 @@
     "title": "Evaluating AI for content credibility",
     "year": "2026",
     "category": "Machine Learning & AI",
-    "description": "Can a more elaborate AI system make better judgments? I led a three-person team combining ML signals and LLM agents, then compared designs across six credibility dimensions.",
+    "description": "Can a more elaborate AI system make better judgments? I led a three-person team combining ML signals and LLM agents, then compared designs across six credibility dimensions. Validation favored the simpler design.",
     "tools": [
       "Python",
       "LLMs",
