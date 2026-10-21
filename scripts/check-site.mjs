@@ -1,19 +1,15 @@
 /** Validate static routes, fragments, project metadata, and progressive content. */
-import { readFile, readdir, stat } from 'node:fs/promises';
+import { readFile, stat } from 'node:fs/promises';
 import { resolve, dirname, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import assert from 'node:assert/strict';
 const root = resolve(fileURLToPath(new URL('../', import.meta.url)));
-const files = [];
-async function walk(path) {
-  for (const entry of await readdir(path,{withFileTypes:true})) {
-    if (entry.name.startsWith('.') || entry.name === 'node_modules') continue;
-    const child = resolve(path, entry.name);
-    if (entry.isDirectory()) await walk(child);
-    else if (entry.name.endsWith('.html')) files.push(child);
-  }
-}
-await walk(root);
+// Validate maintained portfolio routes, independently of unrelated staged changes.
+// Legacy coursework pages may remain in Git history or in a deployment checkout.
+const projects=JSON.parse(await readFile(resolve(root,'lib/projects.json'),'utf8'));
+const routes=['index.html','projects/index.html','resume/index.html','contact/index.html',
+  ...projects.filter(p=>p.featuredOrder!==null).map(p=>`projects/${p.slug}/index.html`)];
+const files=routes.map(route=>resolve(root,route));
 const contents = new Map(await Promise.all(files.map(async file => [file,await readFile(file,'utf8')])));
 let links = 0;
 for (const [file, html] of contents) {
@@ -43,7 +39,6 @@ for (const [file, html] of contents) {
   }
   for (const match of html.matchAll(/<a\b[^>]*target="_blank"[^>]*>/g)) assert.match(match[0],/rel="[^"]*noopener/,`New tab needs noopener: ${name}`);
 }
-const projects=JSON.parse(await readFile(resolve(root,'lib/projects.json'),'utf8'));
 assert.equal(projects.length,6);
 assert.equal(projects.filter(p=>p.featuredOrder!==null).length,3);
 for(const p of projects) {
