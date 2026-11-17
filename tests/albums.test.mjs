@@ -32,7 +32,6 @@ function node() {
 function albumUI({ available = true, reduced = false, nativeDialog = true } = {}) {
   const motion = Object.assign(node(), { matches: reduced });
   const timelines = [];
-  const sets = [];
   const albums = [5, 1].map((length, index) => {
     const source = node();
     source.className = `hobby-album album-${index}`;
@@ -67,11 +66,11 @@ function albumUI({ available = true, reduced = false, nativeDialog = true } = {}
     querySelector: () => dialog, querySelectorAll: () => albums.map(ui => ui.source),
   });
   const gsap = {
-    set: (target, properties) => sets.push({ target, properties }),
+    set() {},
     timeline: ({ onComplete }) => {
-      const timeline = { killed: false, completed: false, steps: [], callbacks: [],
-        to(...args) { this.steps.push(args); return this; },
-        fromTo(...args) { this.steps.push(args); return this; },
+      const timeline = { killed: false, completed: false, callbacks: [],
+        to() { return this; },
+        fromTo() { return this; },
         call(callback) { this.callbacks.push(callback); return this; },
         kill() { this.killed = true; },
         progress(value) {
@@ -94,7 +93,7 @@ function albumUI({ available = true, reduced = false, nativeDialog = true } = {}
   };
   if (available) window.gsap = gsap;
   vm.runInNewContext(source, { document, window });
-  return { albums, document, motion, timelines, sets, dialog, parts, title, left: parts['page-left'].querySelector('.album-page-content'), right: parts['page-right'].querySelector('.album-page-content') };
+  return { albums, document, motion, timelines, dialog, parts, title, left: parts['page-left'].querySelector('.album-page-content'), right: parts['page-right'].querySelector('.album-page-content') };
 }
 
 test('missing GSAP or dialog support preserves native albums and all photos', () => {

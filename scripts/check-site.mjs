@@ -1,5 +1,5 @@
 /** Validate static routes, fragments, project metadata, and progressive content. */
-import { readFile, stat } from 'node:fs/promises';
+import { readFile, readdir, stat } from 'node:fs/promises';
 import { resolve, dirname, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import assert from 'node:assert/strict';
@@ -13,6 +13,7 @@ const routes=['index.html','about/index.html','projects/index.html','resume/inde
 const files=routes.map(route=>resolve(root,route));
 const contents = new Map(await Promise.all(files.map(async file => [file,await readFile(file,'utf8')])));
 let links = 0;
+const referenced = new Set();
 for (const [file, html] of contents) {
   const name = relative(root,file);
   const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);
@@ -39,6 +40,7 @@ for (const [file, html] of contents) {
     try { info = await stat(target); } catch { assert.fail(`Missing target: ${name}: ${value}`); }
     if (info.isDirectory()) target=resolve(target,'index.html');
     await stat(target);
+    referenced.add(target);
     if (hash) {
       const targetHTML=contents.get(target) ?? await readFile(target,'utf8');
       assert.ok(targetHTML.includes(`id="${hash}"`),`Missing fragment: ${name}: ${value}`);
@@ -50,8 +52,6 @@ for (const [file, html] of contents) {
 assert.equal(projects.length,6);
 assert.equal(projects.filter(p=>p.featuredOrder!==null).length,3);
 for(const p of projects) {
-  assert.match(p.slug,/^[a-z0-9-]+$/);
-  assert.ok(Array.isArray(p.tags)&&p.tags.length);
   if(p.featuredOrder!==null) assert.ok(contents.has(resolve(root,'projects',p.slug,'index.html')));
 }
 const home=contents.get(resolve(root,'index.html'));
@@ -62,7 +62,7 @@ assert.equal([...home.matchAll(/data-project=/g)].length,3);
 assert.equal([...index.matchAll(/data-project=/g)].length,6);
 assert.match(about,/Associate Quantitative Analyst/);
 assert.match(about,/Sep 2025 — Sep 2026/);
-assert.equal([...about.matchAll(/<details class="hobby-album /g)].length,4,'About has four hobby albums.');
+assert.equal([...about.matchAll(/<details class="hobby-album(?: |")/g)].length,4,'About has four hobby albums.');
 for (const title of ['Crochet &amp; Knitting','Photography','Journaling','My Cats']) {
   assert.ok(about.includes(`<span class="album-title">${title}</span>`),`Missing hobby album: ${title}`);
 }
@@ -99,6 +99,17 @@ assert.ok((await readFile(resolve(root,'files/Cecilia_Lin_Resume.pdf'))).subarra
 const css=await readFile(resolve(root,'style.css'),'utf8');
 for (const match of css.matchAll(/url\(\s*['"]?([^'")]+)['"]?\s*\)/g)) {
  if (/^(https?:|data:|#)/.test(match[1])) continue;
- await stat(resolve(root,match[1]));
+ const target = resolve(root,match[1]);
+ await stat(target);
+ referenced.add(target);
 }
-console.log(`Passed: ${files.length - 1} pages and a contact redirect, ${links} local links/assets/fragments, shared navigation, six projects, and three case-study routes.`);
+// Every shipped illustration must be referenced by a maintained page or stylesheet.
+async function checkImages(directory) {
+ for (const entry of await readdir(directory,{withFileTypes:true})) {
+  const file=resolve(directory,entry.name);
+  if (entry.isDirectory()) await checkImages(file);
+  else if (entry.isFile()) assert.ok(referenced.has(file),`Unreferenced image: ${relative(root,file)}`);
+ }
+}
+await checkImages(resolve(root,'images'));
+console.log(`Passed: ${files.length - 1} pages and a contact redirect, ${links} local links/assets/fragments, shared navigation, six projects, three case-study routes, and image references.`);

@@ -24,9 +24,9 @@ function visual(project) {
 function card(p, base) {
   const local = p.featuredOrder !== null;
   const compact = base === '';
-  const title = compact ? p.shortTitle ?? p.title : p.title;
-  const description = compact ? p.shortDescription ?? p.description : p.description;
-  const heading = base ? 'h2' : 'h3';
+  const title = compact ? p.shortTitle : p.title;
+  const description = compact ? p.shortDescription : p.description;
+  const heading = compact ? 'h3' : 'h2';
   const href = local ? `${base}projects/${p.slug}/` : p.url;
   const external = local ? '' : ' target="_blank" rel="noopener noreferrer"';
   const color = {'news-credibility':'news','recipe-analysis':'recipe','blood-glucose':'glucose','posturepress':'news','ev-adoption':'recipe','interest-zoning':'glucose'}[p.slug];

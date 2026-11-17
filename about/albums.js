@@ -8,7 +8,13 @@
   const spread = dialog.querySelector('.album-spread');
   const left = dialog.querySelector('.album-page-left');
   const right = dialog.querySelector('.album-page-right');
+  const leftContent = left.querySelector('.album-page-content');
+  const rightContent = right.querySelector('.album-page-content');
+  const leftFolio = left.querySelector('.album-folio');
+  const rightFolio = right.querySelector('.album-folio');
   const lid = dialog.querySelector('.album-lid');
+  const lidTitle = lid.querySelector('h3');
+  const lidImage = lid.querySelector('img');
   const title = dialog.querySelector('#album-dialog-title');
   const close = dialog.querySelector('.album-dialog-close');
   const navigation = dialog.querySelector('.album-navigation');
@@ -37,8 +43,6 @@
   const renderSpread = index => {
     active.index = index;
     const photos = active.photos.slice(index * 2, index * 2 + 2);
-    const leftContent = left.querySelector('.album-page-content');
-    const rightContent = right.querySelector('.album-page-content');
     leftContent.replaceChildren();
     rightContent.replaceChildren();
     if (photos.length === 2) {
@@ -59,12 +63,12 @@
       leftContent.append(inscription);
       rightContent.append(makePhoto(photos[0]));
     }
-    left.querySelector('.album-folio').textContent = String(index * 2 + 1).padStart(2, '0');
-    right.querySelector('.album-folio').textContent = String(index * 2 + 2).padStart(2, '0');
+    leftFolio.textContent = String(index * 2 + 1).padStart(2, '0');
+    rightFolio.textContent = String(index * 2 + 2).padStart(2, '0');
     updateNavigation();
   };
   const reset = () => {
-    if (dialog.open) return;
+    if (dialog.open || !active) return;
     animation?.kill();
     flip?.kill();
     animation = flip = null;
@@ -99,8 +103,8 @@
     closing = false;
     title.textContent = album.title;
     dialog.style.setProperty('--album-cover-color', window.getComputedStyle(album.card).getPropertyValue('--cover'));
-    lid.querySelector('h3').textContent = album.title;
-    lid.querySelector('img').src = album.image.src;
+    lidTitle.textContent = album.title;
+    lidImage.src = album.coverImage;
     renderSpread(album.index);
     clearMotion();
     lid.hidden = true;
@@ -154,7 +158,7 @@
       card, launcher, photos, index: 0,
       title: cover.querySelector('.album-title').textContent,
       note: source.querySelector('.album-page-title').textContent,
-      image: cover.querySelector('img'),
+      coverImage: cover.querySelector('img').src,
     };
     launcher.setAttribute('aria-label', `Open ${album.title} album`);
     launcher.setAttribute('aria-haspopup', 'dialog');
