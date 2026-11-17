@@ -14,6 +14,7 @@ function element(dataset = {}) {
   return {
     dataset, hidden: true, value: '', textContent: '', focused: false,
     addEventListener: (type, listener) => events.set(type, listener),
+    removeEventListener: (type, listener) => { if (events.get(type) === listener) events.delete(type); },
     emit: (type, event = {}) => events.get(type)?.(event),
     setAttribute: (key, value) => attributes.set(key, value),
     getAttribute: key => attributes.get(key),
@@ -153,4 +154,103 @@ test('title animation stays optional when GSAP is unavailable', async () => {
   vm.runInNewContext(await read('hero.js'), { document, window: {} });
   assert.equal(toggle.hidden, true);
   assert.ok(!hero.classList.contains('has-role-animation'));
+});
+
+async function rotationUI({ reduced = false } = {}) {
+  const hero = element();
+  const toggle = element();
+  // Updating playback must preserve the SVG children.
+  Object.defineProperty(toggle, 'textContent', { set() { throw new Error('Icon markup overwritten'); } });
+  const titles = [element(), element(), element()];
+  const document = Object.assign(element(), {
+    hidden: false,
+    querySelector: selector => selector === '.hero' ? hero : toggle,
+    querySelectorAll: () => titles,
+  });
+  const delays = [];
+  const transitions = [];
+  const sets = [];
+  let activate;
+  let cleanup;
+  const gsap = {
+    matchMedia: () => ({ add: (query, callback) => {
+      assert.equal(query, '(prefers-reduced-motion: no-preference)');
+      activate = () => { cleanup = callback(); };
+      if (!reduced) activate();
+    } }),
+    set: (target, properties) => sets.push({ target, properties }),
+    delayedCall: (seconds, callback) => {
+      const delay = { seconds, callback, paused: false, killed: false,
+        pause() { this.paused = true; }, resume() { this.paused = false; }, kill() { this.killed = true; } };
+      delays.push(delay);
+      return delay;
+    },
+    timeline: ({ onComplete }) => {
+      const timeline = { steps: [],
+        to(...args) { this.steps.push(args); return this; },
+        fromTo(...args) { this.steps.push(args); return this; },
+        progress(value) { assert.equal(value, 1); onComplete(); }, kill() {} };
+      transitions.push(timeline);
+      return timeline;
+    },
+  };
+  vm.runInNewContext(await read('hero.js'), { document, window: { gsap } });
+  return { hero, toggle, titles, document, delays, transitions, sets, activate: () => activate(), cleanup: () => cleanup() };
+}
+
+test('focus-area controls synchronize playback state, action label, and tooltip', async () => {
+  const ui = await rotationUI();
+  const assertControl = paused => {
+    const action = paused ? 'Resume' : 'Pause';
+    assert.equal(ui.toggle.dataset.state, paused ? 'paused' : 'playing');
+    assert.equal(ui.toggle.getAttribute('aria-label'), `${action} focus-area animation`);
+    assert.equal(ui.toggle.getAttribute('title'), `${action} focus-area animation`);
+  };
+  assert.equal(ui.toggle.hidden, false);
+  assertControl(false);
+  assert.equal(ui.delays[0].seconds, 2.8);
+  ui.toggle.emit('click');
+  assertControl(true);
+  assert.equal(ui.delays[0].paused, true);
+  ui.toggle.emit('click');
+  assertControl(false);
+  assert.equal(ui.delays[0].paused, false);
+  ui.delays[0].callback();
+  assert.equal(ui.transitions[0].steps[0][1].duration, 0.28);
+  assert.equal(ui.transitions[0].steps[1][2].duration, 0.38);
+  ui.toggle.emit('click');
+  assertControl(true);
+  assert.equal(ui.delays.length, 2, 'in-flight transition finishes before pausing');
+  assert.equal(ui.delays[1].paused, true);
+  ui.document.hidden = true;
+  ui.document.emit('visibilitychange');
+  ui.document.hidden = false;
+  ui.document.emit('visibilitychange');
+  assert.equal(ui.delays[1].paused, true, 'visibility changes respect explicit pause');
+  ui.cleanup();
+  assert.equal(ui.toggle.hidden, true);
+  assert.equal(ui.hero.classList.contains('has-role-animation'), false);
+  assert.equal(ui.sets.at(-1).properties.clearProps, 'opacity,visibility,transform');
+  assert.equal(ui.delays[1].killed, true);
+  ui.activate();
+  assertControl(true);
+  assert.equal(ui.delays.at(-1).paused, true);
+});
+
+test('reduced motion keeps all focus areas static and controls hidden', async () => {
+  const ui = await rotationUI({ reduced: true });
+  assert.equal(ui.toggle.hidden, true);
+  assert.equal(ui.hero.classList.contains('has-role-animation'), false);
+  assert.equal(ui.sets.length, 0);
+  assert.equal(ui.delays.length, 0);
+});
+
+test('homepage provides static focus areas and decorative playback icons', async () => {
+  const html = await read('index.html');
+  const areas = [...html.matchAll(/class="role-title">([^<]+)</g)].map(match => match[1]);
+  assert.deepEqual(areas, ['Machine Learning', 'Applied AI', 'Data Engineering']);
+  assert.ok(html.includes('<span class="sr-only">Focus areas: Machine Learning, Applied AI, and Data Engineering.</span>'));
+  assert.match(html, /id="role-toggle"[^>]+hidden><svg class="icon-pause"[^>]+aria-hidden="true"/);
+  assert.match(html, /<svg class="icon-play"[^>]+aria-hidden="true"/);
+  assert.match(html, /<title>Cecilia Lin \| Machine Learning &amp; Applied AI<\/title>/);
 });

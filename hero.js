@@ -17,8 +17,10 @@
     gsap.set(titles, { autoAlpha: 0, yPercent: 65 });
     gsap.set(titles[0], { autoAlpha: 1, yPercent: 0 });
     const updateButton = () => {
-      toggle.textContent = userPaused ? 'Resume' : 'Pause';
-      toggle.setAttribute('aria-label', `${userPaused ? 'Resume' : 'Pause'} job title animation`);
+      const label = `${userPaused ? 'Resume' : 'Pause'} focus-area animation`;
+      toggle.dataset.state = userPaused ? 'paused' : 'playing';
+      toggle.setAttribute('aria-label', label);
+      toggle.setAttribute('title', label);
     };
     const schedule = () => {
       if (disposed) return;
