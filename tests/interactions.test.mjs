@@ -245,12 +245,11 @@ test('reduced motion keeps all focus areas static and controls hidden', async ()
   assert.equal(ui.delays.length, 0);
 });
 
-test('homepage provides static focus areas and decorative playback icons', async () => {
+test('homepage provides static focus areas and a decorative clover control', async () => {
   const html = await read('index.html');
   const areas = [...html.matchAll(/class="role-title">([^<]+)</g)].map(match => match[1]);
   assert.deepEqual(areas, ['Machine Learning', 'Applied AI', 'Data Engineering']);
   assert.ok(html.includes('<span class="sr-only">Focus areas: Machine Learning, Applied AI, and Data Engineering.</span>'));
-  assert.match(html, /id="role-toggle"[^>]+hidden><svg class="icon-pause"[^>]+aria-hidden="true"/);
-  assert.match(html, /<svg class="icon-play"[^>]+aria-hidden="true"/);
+  assert.match(html, /id="role-toggle"[^>]+aria-label="Pause focus-area animation"[^>]+hidden><img src="images\/icons\/clover.png" alt=""/);
   assert.match(html, /<title>Cecilia Lin \| Machine Learning &amp; Applied AI<\/title>/);
 });
