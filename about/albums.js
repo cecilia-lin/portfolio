@@ -1,105 +1,185 @@
-// Optional GSAP enhancement: native details and every photo remain usable without it.
+// Optional enhancement: without GSAP or native dialogs, the inline details stay usable.
 (() => {
   const gsap = window.gsap;
-  if (!gsap) return;
+  const dialog = document.querySelector('#album-dialog');
+  if (!gsap || !dialog || typeof dialog.showModal !== 'function') return;
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const states = [...document.querySelectorAll('.hobby-album')].map(album => ({
-    album,
-    cover: album.querySelector('.album-cover'),
-    reveal: album.querySelector('.album-reveal'),
-    pages: [...album.querySelectorAll('.hobby-polaroid')],
-    navigation: album.querySelector('.album-navigation'),
-    previous: album.querySelector('.album-prev'),
-    next: album.querySelector('.album-next'),
-    count: album.querySelector('.album-count'),
-    expanded: album.open,
-    index: 0,
-    animation: null,
-    flip: null,
-  })).filter(state => state.cover && state.reveal && state.pages.length && state.navigation && state.previous && state.next && state.count);
-
-  const updatePages = state => {
-    state.pages.forEach((page, index) => { page.hidden = index !== state.index; });
-    state.count.textContent = `Page ${state.index + 1} of ${state.pages.length}`;
-    state.previous.disabled = state.index === 0;
-    state.next.disabled = state.index === state.pages.length - 1;
+  const scene = dialog.querySelector('.album-scene');
+  const spread = dialog.querySelector('.album-spread');
+  const left = dialog.querySelector('.album-page-left');
+  const right = dialog.querySelector('.album-page-right');
+  const lid = dialog.querySelector('.album-lid');
+  const title = dialog.querySelector('#album-dialog-title');
+  const close = dialog.querySelector('.album-dialog-close');
+  const navigation = dialog.querySelector('.album-navigation');
+  const previous = dialog.querySelector('.album-prev');
+  const next = dialog.querySelector('.album-next');
+  const count = dialog.querySelector('.album-count');
+  let active = null;
+  let animation = null;
+  let flip = null;
+  let closing = false;
+  const instant = () => motion.matches || document.hidden;
+  const targets = [scene, spread, left, right, lid];
+  const clearMotion = () => gsap.set(targets, { clearProps: 'transform,transformOrigin,opacity,visibility' });
+  const updateNavigation = () => {
+    const total = Math.ceil(active.photos.length / 2);
+    navigation.hidden = total < 2;
+    count.textContent = `Spread ${active.index + 1} of ${total}`;
+    previous.disabled = Boolean(flip) || active.index === 0;
+    next.disabled = Boolean(flip) || active.index === total - 1;
   };
-  const settle = state => {
-    state.album.open = state.expanded;
-    state.reveal.inert = false;
-    state.album.classList.remove('is-album-animating');
-    gsap.set(state.reveal, { clearProps: 'height,opacity,overflow' });
-    gsap.set(state.cover, { clearProps: 'transform,transformOrigin' });
-    state.animation = null;
+  const makePhoto = original => {
+    const photo = original.cloneNode(true);
+    photo.querySelector('img').loading = 'eager';
+    return photo;
   };
-  const setExpanded = (state, expanded) => {
-    state.flip?.progress(1);
-    state.animation?.kill();
-    state.expanded = expanded;
-    if (!expanded && state.album.contains(document.activeElement) && document.activeElement !== state.cover) state.cover.focus();
-    if (motion.matches || document.hidden || (!expanded && !state.album.open)) {
-      settle(state);
-      return;
+  const renderSpread = index => {
+    active.index = index;
+    const photos = active.photos.slice(index * 2, index * 2 + 2);
+    const leftContent = left.querySelector('.album-page-content');
+    const rightContent = right.querySelector('.album-page-content');
+    leftContent.replaceChildren();
+    rightContent.replaceChildren();
+    if (photos.length === 2) {
+      leftContent.append(makePhoto(photos[0]));
+      rightContent.append(makePhoto(photos[1]));
+    } else {
+      const inscription = document.createElement('div');
+      inscription.className = 'album-inscription';
+      const flower = document.createElement('span');
+      flower.className = 'album-inscription-flower';
+      flower.setAttribute('aria-hidden', 'true');
+      flower.textContent = '✿';
+      const heading = document.createElement('h3');
+      heading.textContent = active.title;
+      const note = document.createElement('p');
+      note.textContent = active.note;
+      inscription.append(flower, heading, note);
+      leftContent.append(inscription);
+      rightContent.append(makePhoto(photos[0]));
     }
-    if (!state.album.open) {
-      state.album.open = true;
-      gsap.set(state.reveal, { height: 0, opacity: 0 });
-    }
-    state.reveal.inert = !expanded;
-    state.album.classList.add('is-album-animating');
-    gsap.set(state.reveal, { overflow: 'hidden' });
-    state.animation = gsap.timeline({ onComplete: () => settle(state) })
-      .to(state.reveal, { height: expanded ? 'auto' : 0, opacity: expanded ? 1 : 0, duration: 0.46, ease: 'power2.inOut' }, 0)
-      .to(state.cover, { rotationY: expanded ? -10 : 8, transformPerspective: 900, transformOrigin: 'left center', duration: 0.23, ease: 'power2.out' }, 0)
-      .to(state.cover, { rotationY: 0, duration: 0.23, ease: 'power2.inOut' }, 0.23);
+    left.querySelector('.album-folio').textContent = String(index * 2 + 1).padStart(2, '0');
+    right.querySelector('.album-folio').textContent = String(index * 2 + 2).padStart(2, '0');
+    updateNavigation();
   };
-  const turnPage = (state, direction) => {
-    const target = state.index + direction;
-    if (!state.expanded || state.flip || target < 0 || target >= state.pages.length) return;
-    // Finish opening first so the page turn can use the album's natural height.
-    state.animation?.progress(1);
-    if (motion.matches || document.hidden) {
-      state.index = target;
-      updatePages(state);
-      return;
-    }
-    const outgoing = state.pages[state.index];
-    const incoming = state.pages[target];
-    incoming.hidden = false;
-    state.previous.disabled = state.next.disabled = true;
-    state.flip = gsap.timeline({ onComplete: () => {
-      state.index = target;
-      updatePages(state);
-      gsap.set([outgoing, incoming], { clearProps: 'transform,transformOrigin,opacity,visibility' });
-      state.flip = null;
+  const reset = () => {
+    if (dialog.open) return;
+    animation?.kill();
+    flip?.kill();
+    animation = flip = null;
+    closing = false;
+    clearMotion();
+    lid.hidden = true;
+    document.body.classList.remove('album-modal-open');
+    const launcher = active?.launcher;
+    active = null;
+    launcher?.focus({ preventScroll: true });
+  };
+  const finishClose = () => {
+    if (dialog.open) dialog.close();
+    reset();
+  };
+  const closeAlbum = () => {
+    if (!active || closing) return;
+    closing = true;
+    flip?.progress(1);
+    animation?.kill();
+    if (instant()) { finishClose(); return; }
+    if (lid.hidden) gsap.set(lid, { rotationY: -165, autoAlpha: 0 });
+    lid.hidden = false;
+    animation = gsap.timeline({ onComplete: finishClose })
+      .to(lid, { rotationY: 0, autoAlpha: 1, duration: 0.5, ease: 'power2.inOut' }, 0)
+      .to(spread, { opacity: 0, duration: 0.2 }, 0.25)
+      .to(scene, { scale: 0.94, y: 20, opacity: 0, duration: 0.22, ease: 'power2.in' }, 0.4);
+  };
+  const openAlbum = album => {
+    if (dialog.open) return;
+    active = album;
+    closing = false;
+    title.textContent = album.title;
+    dialog.style.setProperty('--album-cover-color', window.getComputedStyle(album.card).getPropertyValue('--cover'));
+    lid.querySelector('h3').textContent = album.title;
+    lid.querySelector('img').src = album.image.src;
+    renderSpread(album.index);
+    clearMotion();
+    lid.hidden = true;
+    dialog.showModal();
+    document.body.classList.add('album-modal-open');
+    if (instant()) return;
+    lid.hidden = false;
+    animation = gsap.timeline({ onComplete: () => {
+      lid.hidden = true;
+      clearMotion();
+      animation = null;
     } })
-      .to(outgoing, { rotationY: -70 * direction, autoAlpha: 0, transformOrigin: 'left center', duration: 0.26, ease: 'power2.in' }, 0)
-      .fromTo(incoming, { rotationY: 70 * direction, autoAlpha: 0, transformOrigin: 'left center' }, { rotationY: 0, autoAlpha: 1, duration: 0.42, ease: 'power2.out' }, 0.12);
+      .fromTo(scene, { opacity: 0, scale: 0.9, y: 35 }, { opacity: 1, scale: 1, y: 0, duration: 0.5, ease: 'power3.out' }, 0)
+      .fromTo(spread, { opacity: 0 }, { opacity: 1, duration: 0.35 }, 0.15)
+      .fromTo(lid, { rotationY: 0, autoAlpha: 1 }, { rotationY: -165, duration: 0.8, ease: 'power2.inOut' }, 0.06)
+      .to(lid, { autoAlpha: 0, duration: 0.2 }, 0.6)
+      .fromTo(left, { rotationY: 35 }, { rotationY: 0, duration: 0.65, ease: 'power2.out' }, 0.2);
+  };
+  const turnSpread = direction => {
+    if (!active || closing || flip) return;
+    const target = active.index + direction;
+    if (target < 0 || target >= Math.ceil(active.photos.length / 2)) return;
+    animation?.progress(1);
+    if (instant()) { renderSpread(target); return; }
+    const page = direction > 0 ? right : left;
+    flip = gsap.timeline({ onComplete: () => {
+      if (active.index !== target) renderSpread(target);
+      flip = null;
+      clearMotion();
+      updateNavigation();
+    } })
+      .to(page, { rotationY: -80 * direction, opacity: 0, duration: 0.26, ease: 'power2.in' }, 0)
+      .call(() => renderSpread(target), [], 0.26)
+      .fromTo(page, { rotationY: 70 * direction, opacity: 0 }, { rotationY: 0, opacity: 1, duration: 0.4, ease: 'power2.out', immediateRender: false }, 0.26);
+    updateNavigation();
   };
 
-  states.forEach(state => {
-    // Handle exclusivity here so the previous album can finish its closing motion.
-    state.album.removeAttribute('name');
-    state.album.classList.add('album-paged');
-    state.navigation.hidden = state.pages.length < 2;
-    updatePages(state);
-    state.cover.addEventListener('click', event => {
+  document.querySelectorAll('.hobby-album').forEach(source => {
+    const cover = source.querySelector('.album-cover');
+    const photos = [...source.querySelectorAll('.hobby-polaroid')];
+    if (!cover || !photos.length) return;
+    // Replace the disclosure with a real dialog-launching button only after enhancement is available.
+    const card = document.createElement('div');
+    card.className = source.className;
+    card.id = source.id;
+    const launcher = document.createElement('button');
+    launcher.type = 'button';
+    launcher.className = 'album-cover';
+    launcher.append(...[...cover.childNodes].map(child => child.cloneNode(true)));
+    const album = {
+      card, launcher, photos, index: 0,
+      title: cover.querySelector('.album-title').textContent,
+      note: source.querySelector('.album-page-title').textContent,
+      image: cover.querySelector('img'),
+    };
+    launcher.setAttribute('aria-label', `Open ${album.title} album`);
+    launcher.setAttribute('aria-haspopup', 'dialog');
+    launcher.setAttribute('aria-controls', 'album-dialog');
+    launcher.addEventListener('click', () => openAlbum(album));
+    card.append(launcher);
+    source.replaceWith(card);
+  });
+  close.addEventListener('click', closeAlbum);
+  dialog.addEventListener('cancel', event => { event.preventDefault(); closeAlbum(); });
+  dialog.addEventListener('close', reset);
+  dialog.addEventListener('click', event => { if (event.target === dialog) closeAlbum(); });
+  previous.addEventListener('click', () => turnSpread(-1));
+  next.addEventListener('click', () => turnSpread(1));
+  dialog.addEventListener('keydown', event => {
+    if (event.altKey || event.ctrlKey || event.metaKey || event.target?.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(event.target?.tagName)) return;
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
       event.preventDefault();
-      const expanded = !state.expanded;
-      if (expanded) states.forEach(other => { if (other !== state && other.expanded) setExpanded(other, false); });
-      setExpanded(state, expanded);
-    });
-    state.album.addEventListener('toggle', () => {
-      // Keep find-in-page or other native changes synchronized with the enhancement.
-      if (!state.animation && state.album.open !== state.expanded) setExpanded(state, state.album.open);
-    });
-    state.previous.addEventListener('click', () => turnPage(state, -1));
-    state.next.addEventListener('click', () => turnPage(state, 1));
+      turnSpread(event.key === 'ArrowRight' ? 1 : -1);
+    }
   });
-  const finishMotion = () => states.forEach(state => {
-    state.flip?.progress(1);
-    state.animation?.progress(1);
-  });
+  const finishMotion = () => {
+    if (closing) finishClose();
+    else { animation?.progress(1); flip?.progress(1); }
+  };
   motion.addEventListener('change', () => { if (motion.matches) finishMotion(); });
   document.addEventListener('visibilitychange', () => { if (document.hidden) finishMotion(); });
 })();

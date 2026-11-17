@@ -66,6 +66,8 @@ assert.equal([...about.matchAll(/<details class="hobby-album /g)].length,4,'Abou
 for (const title of ['Crochet &amp; Knitting','Photography','Journaling','My Cats']) {
   assert.ok(about.includes(`<span class="album-title">${title}</span>`),`Missing hobby album: ${title}`);
 }
+assert.match(about,/<dialog id="album-dialog"[^>]+aria-labelledby="album-dialog-title"/,'Album spreads use a labelled dialog.');
+assert.match(about,/class="album-dialog-close"[^>]+aria-label="Close album"/);
 assert.match(about,/class="portrait-paper"/);
 assert.match(resume,/Cognitive Science Summer Scholar/);
 assert.match(resume,/170K\+ hours of battery telemetry/);
