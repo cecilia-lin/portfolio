@@ -18,7 +18,7 @@ for (const [file, html] of contents) {
   assert.equal(new Set(ids).size,ids.length,`Duplicate IDs: ${name}`);
   assert.equal([...html.matchAll(/<h1\b/g)].length,1,`One h1 required: ${name}`);
   assert.match(html,/<meta name="description" content="[^"]+"/,`Description required: ${name}`);
-  assert.match(html,/<nav[^>]+aria-label="Main navigation"/,`Static navigation required: ${name}`);
+  if (name !== 'contact/index.html') assert.match(html,/<nav[^>]+aria-label="Main navigation"/,`Static navigation required: ${name}`);
   assert.match(html,/<main id="main"/,`Main landmark required: ${name}`);
   for (const match of html.matchAll(/\b(?:href|src)="([^"]+)"/g)) {
     const value = match[1].replace(/&amp;/g,'&');
@@ -60,12 +60,20 @@ assert.match(resume,/Cognitive Science Summer Scholar/);
 assert.match(resume,/170K\+ hours of battery telemetry/);
 assert.equal([...about.matchAll(/class="experience-item"/g)].length,4,'About has four compact roles.');
 assert.ok(!/experience-list|portrait-paper|personal-section/.test(home),'Biography and employment belong on About.');
-assert.match(home,/class="project-card card-lead"/,'Home needs a lead project.');
+assert.ok(!home.includes('card-lead'),'Featured projects have equal weight.');
+assert.ok(!/Data portfolio|Open to opportunities/.test(home),'Home should keep the minimal introduction.');
+assert.match(home,/<a[^>]+href="projects\/">View projects/,'View projects opens the project directory.');
+assert.match(about,/<section id="contact"/,'Contact details belong on About.');
+assert.match(about,/class="contact-methods"/);
+assert.match(contents.get(resolve(root,'contact/index.html')),/<meta http-equiv="refresh" content="0; url=\.\.\/about\/#contact">/,'Preserve the old contact route.');
 for (const [file,html] of contents) {
+ if (relative(root,file) === 'contact/index.html') continue;
  const nav=html.match(/<nav id="primary-nav"[^>]*>([\s\S]*?)<\/nav>/)?.[1];
  assert.ok(nav,`Navigation required: ${relative(root,file)}`);
- assert.deepEqual([...nav.matchAll(/<a[^>]*>([^<]+)<\/a>/g)].map(match=>match[1]),['Home','About','Projects','Resume','Contact']);
+ assert.deepEqual([...nav.matchAll(/<a[^>]*>([^<]+)<\/a>/g)].map(match=>match[1]),['Home','About','Projects','Resume']);
  assert.equal([...nav.matchAll(/aria-current="page"/g)].length,1,'Each page has one active navigation link.');
+ assert.match(html,/<button id="theme-toggle"[^>]+type="button"/,'Theme uses an accessible icon button.');
+ assert.ok(!html.includes('theme-selector'),'Remove the theme dropdown.');
 }
 assert.match(index,/id="empty-results"/);
 assert.match(index,/<form[^>]+hidden/);
@@ -80,4 +88,4 @@ for (const match of css.matchAll(/url\(\s*['"]?([^'")]+)['"]?\s*\)/g)) {
  if (/^(https?:|data:|#)/.test(match[1])) continue;
  await stat(resolve(root,match[1]));
 }
-console.log(`Passed: ${files.length} pages, ${links} local links/assets/fragments, shared navigation, six projects, and three case-study routes.`);
+console.log(`Passed: ${files.length - 1} pages and a contact redirect, ${links} local links/assets/fragments, shared navigation, six projects, and three case-study routes.`);

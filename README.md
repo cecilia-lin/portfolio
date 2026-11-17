@@ -14,15 +14,15 @@ The filter operates on static cards, so it has no runtime JSON request or loadin
 
 ## Pages and journal styling
 
-Navigation links to Home, About, Projects, Resume, and Contact. Home contains a brief introduction and selected work; About contains the portrait, background, four compact roles, and personal interests. The resume page and case studies hold detailed content.
+Navigation links to Home, About, Projects, and Resume. Home contains a brief introduction and selected work; About contains the portrait, background, four compact roles, personal interests, and contact links. The old `/contact/` URL redirects to `/about/#contact`. The resume page and case studies hold detailed content.
 
-The shared pink-paper theme uses Caveat for the signature and small notes, Playfair Display for headings, and DM Sans for body text. Paper grain and doodles are native SVG. Saved light/dark preferences are retained.
+The shared pink-paper theme uses Caveat for the signature and small notes, Playfair Display for headings, and DM Sans for body text. Paper grain and doodles are native SVG. The sun/moon button switches between light and dark. Existing saved preferences are retained; without an explicit choice, the site follows the system theme.
 
 ## Portrait and job titles
 
 The About page includes a Polaroid-style portrait space. Replace `../images/portrait-placeholder.svg` in the About image's `src` with your real image path, and change its empty `alt` to `Cecilia Lin`. The frame crops to 21:25 using `object-fit: cover`; adjust `object-position` for the portrait if needed. Remove the “Photo coming soon” caption once a real photo is added.
 
-Home features one large lead project and two smaller cards. Biography and employment details appear on their own pages.
+Home features three equal project cards in three desktop columns, stacked on mobile. Its introduction emphasizes machine learning, LLM applications, and data pipelines. Biography and employment details appear on their own pages.
 
 The job titles rotate using vendored GSAP 3.15.0; there is no runtime CDN dependency. `hero.js` provides a pause/resume button, stops advancing when the page is hidden, and displays all three titles without animation for reduced-motion preferences or unavailable scripts. GSAP's original license header and upstream license reference are retained in `vendor/gsap/`.
 
