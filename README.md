@@ -11,7 +11,7 @@ With Python 3 installed, run `python3 -m http.server 8000` and open http://local
 - Projects: edit `lib/projects.json`, then run `node scripts/sync-projects.mjs`.
 - Content: edit the corresponding page’s `index.html`.
 - Résumé PDF: replace `files/Cecilia_Lin_Resume.pdf`.
-- Portrait: update the image and caption in `about/index.html`.
+- Portrait and hobby photos: update the images, alt text, and captions in `about/index.html`.
 
 ## Verify and publish
 
