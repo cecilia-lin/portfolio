@@ -3,10 +3,11 @@ import { readFile, stat } from 'node:fs/promises';
 import { resolve, dirname, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import assert from 'node:assert/strict';
+import { readProjects } from './project-data.mjs';
 const root = resolve(fileURLToPath(new URL('../', import.meta.url)));
 // Validate maintained portfolio routes, independently of unrelated staged changes.
 // Legacy coursework pages may remain in Git history or in a deployment checkout.
-const projects=JSON.parse(await readFile(resolve(root,'lib/projects.json'),'utf8'));
+const projects=await readProjects();
 const routes=['index.html','about/index.html','projects/index.html','resume/index.html','contact/index.html',
   ...projects.filter(p=>p.featuredOrder!==null).map(p=>`projects/${p.slug}/index.html`)];
 const files=routes.map(route=>resolve(root,route));
@@ -17,9 +18,16 @@ for (const [file, html] of contents) {
   const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);
   assert.equal(new Set(ids).size,ids.length,`Duplicate IDs: ${name}`);
   assert.equal([...html.matchAll(/<h1\b/g)].length,1,`One h1 required: ${name}`);
+  assert.match(html,/<html lang="en">/,`Document language required: ${name}`);
+  assert.match(html,/<title>[^<]+<\/title>/,`Page title required: ${name}`);
+  assert.match(html,/<meta name="viewport"/,`Responsive viewport required: ${name}`);
   assert.match(html,/<meta name="description" content="[^"]+"/,`Description required: ${name}`);
   if (name !== 'contact/index.html') assert.match(html,/<nav[^>]+aria-label="Main navigation"/,`Static navigation required: ${name}`);
   assert.match(html,/<main id="main"/,`Main landmark required: ${name}`);
+  for (const match of html.matchAll(/\baria-(?:labelledby|describedby|controls)="([^"]+)"/g)) {
+    for (const id of match[1].split(/\s+/)) assert.ok(ids.includes(id), `Missing accessibility reference: ${name}: ${id}`);
+  }
+  for (const match of html.matchAll(/<img\b[^>]*>/g)) assert.match(match[0],/\balt="[^"]*"/,`Image alternative required: ${name}`);
   for (const match of html.matchAll(/\b(?:href|src)="([^"]+)"/g)) {
     const value = match[1].replace(/&amp;/g,'&');
     if (/^(?:https?:|mailto:|data:)/.test(value)) continue;

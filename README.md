@@ -1,42 +1,28 @@
-# Cecilia Lin · Data portfolio
+# Cecilia Lin’s portfolio
 
-A static portfolio for data science, engineering, and analytics, hosted on GitHub Pages. No dependency installation or framework build is required.
+[Live site](https://cecilia-lin.github.io/portfolio/) · HTML, CSS, and JavaScript · GitHub Pages
 
-## Local preview
+## Preview
 
-Run `python3 -m http.server 8000` from this folder and open http://localhost:8000. The site also supports GitHub Pages' `/portfolio/` prefix; links and assets are relative to each page.
+With Python 3 installed, run `python3 -m http.server 8000` and open http://localhost:8000.
 
-## Updating projects
+## Update
 
-Homepage previews use `shortTitle` and `shortDescription`; the project index retains the full summaries. Edit `lib/projects.json`, then run `node scripts/sync-projects.mjs`. This updates the static previews on the homepage and Projects index. `slug` identifies the project; `featuredOrder` is a number for featured case studies and `null` for externally linked projects; `tags` supports multiple filter categories. Update the corresponding case-study HTML when a project's narrative changes.
+- Projects: edit `lib/projects.json`, then run `node scripts/sync-projects.mjs`.
+- Content: edit the corresponding page’s `index.html`.
+- Résumé PDF: replace `files/Cecilia_Lin_Resume.pdf`.
+- Portrait: update the image and caption in `about/index.html`.
 
-The filter operates on static cards, so it has no runtime JSON request or loading dependency. All projects remain readable without JavaScript or if filters cannot initialize. Theme controls tolerate unavailable local storage.
+## Verify and publish
 
-## Pages and journal styling
+Using Node.js 24, run:
 
-Navigation links to Home, About, Projects, and Resume. Home contains a brief introduction and selected work; About contains the portrait, background, four compact roles, personal interests, and contact links. The old `/contact/` URL redirects to `/about/#contact`. The resume page and case studies hold detailed content.
+```sh
+node scripts/sync-projects.mjs --check
+node scripts/check-site.mjs
+node --test tests/*.test.mjs
+```
 
-The shared pink-paper theme uses Caveat for the signature and small notes, Playfair Display for headings, and DM Sans for body text. Paper grain and doodles are native SVG. The sun/moon button switches between light and dark. Existing saved preferences are retained; without an explicit choice, the site follows the system theme.
+Push to `main` to publish. Pull requests run the same checks without deploying.
 
-## Portrait and job titles
-
-The About page includes a Polaroid-style portrait space. Replace `../images/portrait-placeholder.svg` in the About image's `src` with your real image path, and change its empty `alt` to `Cecilia Lin`. The frame crops to 21:25 using `object-fit: cover`; adjust `object-position` for the portrait if needed. Remove the “Photo coming soon” caption once a real photo is added.
-
-Home features three equal project cards in three desktop columns, stacked on mobile. Its introduction emphasizes machine learning, LLM applications, and data pipelines. Biography and employment details appear on their own pages.
-
-The job titles rotate using vendored GSAP 3.15.0; there is no runtime CDN dependency. `hero.js` provides a pause/resume button, stops advancing when the page is hidden, and displays all three titles without animation for reduced-motion preferences or unavailable scripts. GSAP's original license header and upstream license reference are retained in `vendor/gsap/`.
-
-## Checks and publishing
-
-Run `node scripts/sync-projects.mjs --check` and `node scripts/check-site.mjs`. Push the reviewed changes to `main` to use the existing Pages workflow. Browser checks should cover desktop/mobile, both color schemes, reduced motion, keyboard navigation, search/category combinations, empty results, and JavaScript disabled.
-
-## Content references
-
-Experience and education retain the supplied October 2026 resume reference. The older HROP resume supplied in November adds battery-telemetry context and Cognitive Science Summer Scholar recognition; its older employment dates do not override the newer record. The supplied PDF is available at `files/Cecilia_Lin_Resume.pdf`, with download links on the homepage and resume page. Replace this file when publishing an updated resume.
-
-- AI: https://github.com/cecilia-lin/Multi-Agent-AI-System-for-News-Credibility-Detection — architecture, factor definitions, experimental framework. Team contribution and simpler-design outcome are from the resume. The portfolio does not present the resume's peak component accuracy as an overall accuracy figure.
-- Recipes: https://cecilia-lin.github.io/RecipeProject/ — confirms 83,782 recipes, 731,927 interactions, and 234,429 cleaned merged rows; reported F1 0.87 → 0.92. The original narrative has inconsistent exact permutation p-values (0.001 / 0.002), so the portfolio uses p < 0.01 and explains the limitation. Observational results are described as associations.
-- Glucose: https://g7xu.dev/secret-life-of-blood-glucose/ — confirms 15 participants, named co-developers, controls, and measures. No clinical validation or usability outcome is claimed.
-- Other projects retain summaries from the existing portfolio, without adding new numerical claims.
-
-All six original external project destinations returned HTTP 200 when checked on October 20, 2026. External content can change independently of this site.
+[Content sources](docs/content-sources.md) · [GSAP notice](vendor/gsap/NOTICE.md)

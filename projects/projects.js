@@ -4,12 +4,12 @@ const cards = [...document.querySelectorAll('[data-project]')];
 const count = document.querySelector('#project-count');
 const empty = document.querySelector('#empty-results');
 const status = document.querySelector('#filter-status');
-if (form && cards.length && count && empty) {
-  const search = form.querySelector('input[type="search"]');
-  const buttons = [...form.querySelectorAll('[data-filter]')];
+const search = form?.querySelector('input[type="search"]');
+const buttons = [...(form?.querySelectorAll('[data-filter]') ?? [])];
+if (form && search && buttons.length && cards.length && count && empty) {
   let selected = 'all';
   const update = () => {
-    const query = search.value.trim().toLocaleLowerCase();
+    const query = search.value.trim().toLowerCase();
     let visible = 0;
     for (const card of cards) {
       const matchesCategory = selected === 'all' || card.dataset.tags.split('|').includes(selected);

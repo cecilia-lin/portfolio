@@ -1,10 +1,10 @@
 /** Sync static project previews from the shared JSON. No dependencies or build required. */
 import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
+import { readProjects } from './project-data.mjs';
 const root = new URL('../', import.meta.url);
-const projects = JSON.parse(await readFile(new URL('lib/projects.json', root), 'utf8'));
+const projects = await readProjects();
 const escape = value => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-if (new Set(projects.map(p => p.slug)).size !== projects.length) throw new Error('Project slugs must be unique.');
 const featured = projects.filter(p => p.featuredOrder !== null).sort((a, b) => a.featuredOrder - b.featuredOrder);
 const svg = body => `<svg viewBox="0 0 340 215" fill="none" aria-hidden="true">${body}</svg>`;
 const text = (x,y,value,size=10,other='') => `<text x="${x}" y="${y}" fill="var(--ink)" font-family="var(--sans)" font-size="${size}" ${other}>${value}</text>`;
@@ -30,7 +30,7 @@ function card(p, base) {
   const href = local ? `${base}projects/${p.slug}/` : p.url;
   const external = local ? '' : ' target="_blank" rel="noopener noreferrer"';
   const color = {'news-credibility':'news','recipe-analysis':'recipe','blood-glucose':'glucose','posturepress':'news','ev-adoption':'recipe','interest-zoning':'glucose'}[p.slug];
-  const search = [p.title,p.shortTitle ?? '',p.description,p.shortDescription ?? '',p.category,...p.tags,...p.tools].join(' ').toLocaleLowerCase();
+  const search = [p.title,p.shortTitle ?? '',p.description,p.shortDescription ?? '',p.category,...p.tags,...p.tools].join(' ').toLowerCase();
   return `<article class="project-card" data-project="${escape(p.slug)}" data-tags="${escape(p.tags.join('|'))}" data-search="${escape(search)}">
 <div class="project-visual visual-${color}">${visual(p)}</div><div class="project-body">${compact ? '' : `<p class="project-meta">${escape(p.category)} · ${escape(p.year)}</p>`}<${heading}><a href="${escape(href)}"${external}>${escape(title)}</a></${heading}><p class="project-description">${escape(description)}</p><ul class="tools" aria-label="Tools and methods">${p.tools.map(t=>`<li>${escape(t)}</li>`).join('')}</ul><a class="project-link" href="${escape(href)}"${external}>${local?'Read case study':escape(p.urlLabel)} <span aria-hidden="true">↗</span><span class="sr-only">: ${escape(p.title)}</span></a></div></article>`;
 }

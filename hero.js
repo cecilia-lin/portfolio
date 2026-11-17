@@ -19,7 +19,6 @@
     const updateButton = () => {
       toggle.textContent = userPaused ? 'Resume' : 'Pause';
       toggle.setAttribute('aria-label', `${userPaused ? 'Resume' : 'Pause'} job title animation`);
-      toggle.setAttribute('aria-pressed', String(userPaused));
     };
     const schedule = () => {
       if (disposed) return;

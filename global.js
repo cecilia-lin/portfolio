@@ -53,20 +53,3 @@ if (navToggle && nav) {
   });
   matchMedia('(min-width: 761px)').addEventListener('change', closeMenu);
 }
-
-// Highlight the section currently being read, without intercepting native links.
-const sectionLinks = [...document.querySelectorAll('nav a[href^="#"]')];
-if ('IntersectionObserver' in window && sectionLinks.length) {
-  const observer = new IntersectionObserver(entries => {
-    const active = entries.filter(entry => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-    if (!active) return;
-    for (const link of sectionLinks) {
-      if (link.hash === `#${active.target.id}`) link.setAttribute('aria-current', 'location');
-      else link.removeAttribute('aria-current');
-    }
-  }, { rootMargin: '-15% 0px -45% 0px', threshold: [0, 0.2, 0.5] });
-  for (const link of sectionLinks) {
-    const section = document.getElementById(link.hash.slice(1));
-    if (section) observer.observe(section);
-  }
-}
