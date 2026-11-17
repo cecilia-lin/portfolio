@@ -144,6 +144,15 @@ nav a:hover { color: var(--accent); }
 .hobby-album[open] .album-action svg { transform: rotate(180deg); }
 .album-close-label, .hobby-album[open] .album-open-label { display: none; }
 .hobby-album[open] .album-close-label { display: inline; }
+.album-reveal { display: flow-root; }
+.album-paged .album-stack { display: grid; perspective: 900px; }
+.album-paged .hobby-polaroid { grid-area: 1 / 1; margin-bottom: 5px; backface-visibility: hidden; }
+.is-album-animating .album-cover { transition: none; }
+.album-navigation { display: grid; grid-template-columns: repeat(2, minmax(44px, 1fr)); gap: 6px 10px; margin-top: 15px; }
+.album-count { grid-column: 1 / -1; color: var(--muted); font-size: 11px; text-align: center; }
+.album-navigation button { min-height: 44px; padding: 6px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); color: var(--accent); font-size: 18px; }
+.album-navigation button:hover:not(:disabled) { background: var(--rose); }
+.album-navigation button:disabled { opacity: .4; cursor: default; }
 .album-pages { margin: 25px 0 0; padding: 18px 13px; border: 1px solid var(--line); border-radius: 4px; background-color: var(--soft); background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 23px 23px; }
 .album-page-title { color: var(--muted); font-size: 10px; margin-bottom: 22px; text-align: center; }
 .hobby-polaroid { position: relative; min-width: 0; margin: 0 0 26px; padding: 8px 8px 0; background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow); transform: rotate(-2deg); }
