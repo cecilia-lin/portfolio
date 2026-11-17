@@ -12,11 +12,17 @@ Homepage previews use `shortTitle` and `shortDescription`; the project index ret
 
 The filter operates on static cards, so it has no runtime JSON request or loading dependency. All projects remain readable without JavaScript or if filters cannot initialize. Theme controls tolerate unavailable local storage.
 
+## Pages and journal styling
+
+Navigation links to Home, About, Projects, Resume, and Contact. Home contains a brief introduction and selected work; About contains the portrait, background, four compact roles, and personal interests. The resume page and case studies hold detailed content.
+
+The shared pink-paper theme uses Caveat for the signature and small notes, Playfair Display for headings, and DM Sans for body text. Paper grain and doodles are native SVG. Saved light/dark preferences are retained.
+
 ## Portrait and job titles
 
-The homepage includes a portrait space. Replace `images/portrait-placeholder.svg` in the homepage image's `src` with your real image path, and change its empty `alt` to `Cecilia Lin`. The frame crops to 21:25 using `object-fit: cover`; adjust `object-position` for the portrait if needed. Remove the “Photo coming soon” caption once a real photo is added.
+The About page includes a Polaroid-style portrait space. Replace `../images/portrait-placeholder.svg` in the About image's `src` with your real image path, and change its empty `alt` to `Cecilia Lin`. The frame crops to 21:25 using `object-fit: cover`; adjust `object-position` for the portrait if needed. Remove the “Photo coming soon” caption once a real photo is added.
 
-The homepage keeps a short introduction, three project previews, a compact experience list, personal interests, and contact links. The standalone resume and case studies hold the detail.
+Home features one large lead project and two smaller cards. Biography and employment details appear on their own pages.
 
 The job titles rotate using vendored GSAP 3.15.0; there is no runtime CDN dependency. `hero.js` provides a pause/resume button, stops advancing when the page is hidden, and displays all three titles without animation for reduced-motion preferences or unavailable scripts. GSAP's original license header and upstream license reference are retained in `vendor/gsap/`.
 
@@ -26,7 +32,7 @@ Run `node scripts/sync-projects.mjs --check` and `node scripts/check-site.mjs`. 
 
 ## Content references
 
-Experience and education were updated from the supplied October 2026 resume reference. The supplied PDF is available at `files/Cecilia_Lin_Resume.pdf`, with download links on the homepage and resume page. Replace this file when publishing an updated resume.
+Experience and education retain the supplied October 2026 resume reference. The older HROP resume supplied in November adds battery-telemetry context and Cognitive Science Summer Scholar recognition; its older employment dates do not override the newer record. The supplied PDF is available at `files/Cecilia_Lin_Resume.pdf`, with download links on the homepage and resume page. Replace this file when publishing an updated resume.
 
 - AI: https://github.com/cecilia-lin/Multi-Agent-AI-System-for-News-Credibility-Detection — architecture, factor definitions, experimental framework. Team contribution and simpler-design outcome are from the resume. The portfolio does not present the resume's peak component accuracy as an overall accuracy figure.
 - Recipes: https://cecilia-lin.github.io/RecipeProject/ — confirms 83,782 recipes, 731,927 interactions, and 234,429 cleaned merged rows; reported F1 0.87 → 0.92. The original narrative has inconsistent exact permutation p-values (0.001 / 0.002), so the portfolio uses p < 0.01 and explains the limitation. Observational results are described as associations.

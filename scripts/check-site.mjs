@@ -7,7 +7,7 @@ const root = resolve(fileURLToPath(new URL('../', import.meta.url)));
 // Validate maintained portfolio routes, independently of unrelated staged changes.
 // Legacy coursework pages may remain in Git history or in a deployment checkout.
 const projects=JSON.parse(await readFile(resolve(root,'lib/projects.json'),'utf8'));
-const routes=['index.html','projects/index.html','resume/index.html','contact/index.html',
+const routes=['index.html','about/index.html','projects/index.html','resume/index.html','contact/index.html',
   ...projects.filter(p=>p.featuredOrder!==null).map(p=>`projects/${p.slug}/index.html`)];
 const files=routes.map(route=>resolve(root,route));
 const contents = new Map(await Promise.all(files.map(async file => [file,await readFile(file,'utf8')])));
@@ -47,18 +47,37 @@ for(const p of projects) {
   if(p.featuredOrder!==null) assert.ok(contents.has(resolve(root,'projects',p.slug,'index.html')));
 }
 const home=contents.get(resolve(root,'index.html'));
+const about=contents.get(resolve(root,'about/index.html'));
+const resume=contents.get(resolve(root,'resume/index.html'));
 const index=contents.get(resolve(root,'projects/index.html'));
 assert.equal([...home.matchAll(/data-project=/g)].length,3);
 assert.equal([...index.matchAll(/data-project=/g)].length,6);
-assert.match(home,/Associate Quantitative Analyst/);
-assert.match(home,/Sep 2025 — Sep 2026/);
-assert.match(home,/Knitting/);
+assert.match(about,/Associate Quantitative Analyst/);
+assert.match(about,/Sep 2025 — Sep 2026/);
+assert.match(about,/Knitting, crochet, and cat time/);
+assert.match(about,/class="portrait-paper"/);
+assert.match(resume,/Cognitive Science Summer Scholar/);
+assert.match(resume,/170K\+ hours of battery telemetry/);
+assert.equal([...about.matchAll(/class="experience-item"/g)].length,4,'About has four compact roles.');
+assert.ok(!/experience-list|portrait-paper|personal-section/.test(home),'Biography and employment belong on About.');
+assert.match(home,/class="project-card card-lead"/,'Home needs a lead project.');
+for (const [file,html] of contents) {
+ const nav=html.match(/<nav id="primary-nav"[^>]*>([\s\S]*?)<\/nav>/)?.[1];
+ assert.ok(nav,`Navigation required: ${relative(root,file)}`);
+ assert.deepEqual([...nav.matchAll(/<a[^>]*>([^<]+)<\/a>/g)].map(match=>match[1]),['Home','About','Projects','Resume','Contact']);
+ assert.equal([...nav.matchAll(/aria-current="page"/g)].length,1,'Each page has one active navigation link.');
+}
 assert.match(index,/id="empty-results"/);
 assert.match(index,/<form[^>]+hidden/);
-assert.ok(!home.includes('id="about"'),'The repeated About section should be removed.');
-assert.ok(![...contents.values()].some(html=>/href="(?:\.\.\/)*#about"/.test(html)),'Navigation must not link to the removed About section.');
+assert.ok(!home.includes('id="about"'),'About is a separate page.');
+assert.ok(![...contents.values()].some(html=>/href="(?:\.\.\/)*#about"/.test(html)),'About navigation must use its separate route.');
 for (const route of ['index.html','resume/index.html']) {
   assert.match(contents.get(resolve(root,route)), /<a[^>]+href="[^"]*files\/Cecilia_Lin_Resume\.pdf"[^>]+download="Cecilia_Lin_Resume\.pdf"/, `Downloadable resume required: ${route}`);
 }
 assert.ok((await readFile(resolve(root,'files/Cecilia_Lin_Resume.pdf'))).subarray(0,5).equals(Buffer.from('%PDF-')),'Resume must be a PDF.');
-console.log(`Passed: ${files.length} pages, ${links} local links/assets/fragments, six static projects, and three case-study routes.`);
+const css=await readFile(resolve(root,'style.css'),'utf8');
+for (const match of css.matchAll(/url\(\s*['"]?([^'")]+)['"]?\s*\)/g)) {
+ if (/^(https?:|data:|#)/.test(match[1])) continue;
+ await stat(resolve(root,match[1]));
+}
+console.log(`Passed: ${files.length} pages, ${links} local links/assets/fragments, shared navigation, six projects, and three case-study routes.`);
