@@ -1,6 +1,6 @@
 # Visual assets
 
-The clover, gray cat, and notebook were supplied by Cecilia and copied unchanged to `images/icons/{clover,gray-cat,notebook}.png`.
+The clover, gray cat, notebook, and coffee mug were supplied by Cecilia and copied unchanged to `images/icons/{clover,gray-cat,notebook,coffee-mug}.png`.
 
 `images/illustrations/working-at-computer.png` was generated with the built-in image-generation tool. It is a static, transparent illustration, not a portrait. The original alpha channel is preserved.
 
