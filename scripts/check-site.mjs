@@ -62,7 +62,10 @@ assert.equal([...home.matchAll(/data-project=/g)].length,3);
 assert.equal([...index.matchAll(/data-project=/g)].length,6);
 assert.match(about,/Associate Quantitative Analyst/);
 assert.match(about,/Sep 2025 — Sep 2026/);
-assert.match(about,/Knitting, crochet, and cat time/);
+assert.equal([...about.matchAll(/<details class="hobby-album /g)].length,4,'About has four hobby albums.');
+for (const title of ['Crochet &amp; Knitting','Photography','Journaling','My Cats']) {
+  assert.ok(about.includes(`<span class="album-title">${title}</span>`),`Missing hobby album: ${title}`);
+}
 assert.match(about,/class="portrait-paper"/);
 assert.match(resume,/Cognitive Science Summer Scholar/);
 assert.match(resume,/170K\+ hours of battery telemetry/);
