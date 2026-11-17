@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=DM+Sans:wght@400;450;500;550;600;650;700&family=Manrope:wght@500;600;650;700;750;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Elms+Sans:wght@400;450;500;550;600;650;700&display=swap');
 
 :root {
   color-scheme: light;
@@ -6,7 +6,7 @@
   --line: #e8d5dc; --accent: #99405f; --accent-hover: #7d2f4a;
   --rose: #f5dce5; --sage: #f4e3e7; --lilac: #eee2eb; --soft: #fcf0f3; --tape: #ead8c6;
   --shadow: 0 12px 28px #60334b0a, 0 2px 5px #60334b06;
-  --sans: 'DM Sans', system-ui, sans-serif; --display: 'Gaegu', 'Segoe Print', cursive; --hand: var(--display);
+  --sans: 'Elms Sans', system-ui, sans-serif; --display: 'Gaegu', 'Segoe Print', cursive; --hand: var(--display);
   scroll-behavior: smooth; scroll-padding-top: 110px;
 }
 :root[data-theme='dark'] { color-scheme: dark; --bg: #261f25; --surface: #302730; --ink: #f7edf2; --muted: #ccb9c3; --line: #51404b; --accent: #efa8c1; --accent-hover: #ffd1e1; --rose: #4a303e; --sage: #3e3039; --lilac: #3d303f; --soft: #322830; --tape: #71505c; --shadow: 0 12px 28px #10081026; }
@@ -190,7 +190,7 @@ nav a:hover { color: var(--accent); }
 .source-list { display: flex; flex-wrap: wrap; gap: 12px; }
 .resume-layout { display: grid; grid-template-columns: 210px 1fr; gap: 65px; padding-bottom: 65px; }
 .resume-aside { color: var(--muted); font-size: 12px; }
-.resume-aside h2 { font: 700 14px 'Manrope', var(--sans); margin-top: 24px; color: var(--ink); }
+.resume-aside h2 { font: 700 14px var(--sans); margin-top: 24px; color: var(--ink); }
 .resume-aside a { display: block; margin-bottom: 5px; }
 .resume-section { border-top: 1px solid var(--line); padding-block: 27px; }
 .resume-section h2 { font-size: 2rem; margin-bottom: 24px; }
